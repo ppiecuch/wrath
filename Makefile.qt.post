@@ -56,7 +56,7 @@ release/qt-$(1).pro: QtDemo.pro.in $(MAKEFILE_LIST) | $$(THISDEMO_$(1)_RELEASE_S
 	@printf "QMAKE_CXXFLAGS += %s\n" $$(DEFINE_FLAGS) $$(LIBRARY_CXXFLAGS) $$(CXXFLAGS) $$($(1)_CPPFLAGS) $$($(1)_CXXFLAGS) >> $$@
 	@printf "QMAKE_CXXFLAGS_RELEASE += %s\n" $$(CXXFLAGS_RELEASE) $$($(1)_CXXFLAGS_RELEASE) >> $$@
 	@printf "LIBS += %s\n" $$(LDFLAGS) >> $$@
-	@printf "LIBS += libWRATH_Qt_Release.so\n" >> $$@
+	@printf "LIBS += libWRATH_Qt_Release.a\n" >> $$@
 	@printf "MAKEFILE = qt-$(1).Makefile\n" >> $$@
 	@printf "QMAKE_CXX = %s\n" "$(CXX)" >> $$@
 	@printf "QMAKE_CC = %s\n" "$(CC)" >> $$@
@@ -77,7 +77,7 @@ debug/qt-$(1)-debug.pro: QtDemo.pro.in $(MAKEFILE_LIST) | $$(THISDEMO_$(1)_DEBUG
 	@printf "QMAKE_CXXFLAGS += %s\n" $$(DEFINE_FLAGS) $$(LIBRARY_CXXFLAGS) $$(CXXFLAGS) $$($(1)_CPPFLAGS) $$($(1)_CXXFLAGS) >> $$@
 	@printf "QMAKE_CXXFLAGS_DEBUG += %s\n" $$(CXXFLAGS_DEBUG) $$($(1)_CXXFLAGS_DEBUG) >> $$@
 	@printf "LIBS += %s\n" $$(LDFLAGS) >> $$@
-	@printf "LIBS += libWRATH_Qt_Debug.so\n" >> $$@
+	@printf "LIBS += libWRATH_Qt_Debug.a\n" >> $$@
 	@printf "MAKEFILE = qt-$(1)-debug.Makefile\n" >> $$@
 	@printf "QMAKE_CXX = %s\n" "$(CXX)" >> $$@
 	@printf "QMAKE_CC = %s\n" "$(CC)" >> $$@
@@ -151,7 +151,7 @@ debug/QtLibConf.pri: QtLibConf.pri.in $(MAKEFILE_LIST)
 EXTRA_CLEAN += release/QtLib.Makefile debug/QtLib.Makefile
 EXTRA_CLEAN += release/QtLib.pro debug/QtLib.pro
 EXTRA_CLEAN += release/QtLibConf.pri debug/QtLibConf.pri
-EXTRA_CLEAN += release/libWRATH_Qt_Release.so* debug/libWRATH_Qt_Debug.so*
+EXTRA_CLEAN += release/libWRATH_Qt_Release.a* debug/libWRATH_Qt_Debug.a*
 EXTRA_CLEAN += release/qt_obj/*.o debug/qt_obj/*.o
 
 # Targets for command-line invocations

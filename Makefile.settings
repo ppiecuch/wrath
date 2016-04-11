@@ -26,8 +26,11 @@ USE_BOOST_LOCALE ?=0
 USE_ATOMIC_OPS_REF_COUNTING ?=1
 
 # GL header file location
+ifeq ($(shell uname -s),Darwin)
+GL_INCLUDEPATH=/System/Library/Frameworks/OpenGL.framework/Headers
+else
 GL_INCLUDEPATH=/usr/include
-
+endif
 ifeq ($(MINGW_BUILD),1)
 GL_INCLUDEPATH=/mingw/include
 endif

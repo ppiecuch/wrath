@@ -1,5 +1,5 @@
 TEMPLATE = lib
-CONFIG += dll
+CONFIG += staticlib
 VERSION = 0.0.0
 MAKEFILE = QtLib.Makefile
 OBJECTS_DIR = qt_obj
@@ -31,4 +31,9 @@ DEFINES +=
 
 release {
 DEFINES += NDEBUG
+}
+
+macx {
+INCLUDEPATH+=../deps/Darwin/include
+LIBS+=-L../deps/Darwin/lib
 }

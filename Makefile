@@ -14,7 +14,7 @@
 #
 # This variable is also overrideable from the environment or from make
 # command line.
-BUILDTARGETS ?= qt sdl
+BUILDTARGETS ?= qt #sdl
 
 include Makefile.settings
 include Makefile.functions

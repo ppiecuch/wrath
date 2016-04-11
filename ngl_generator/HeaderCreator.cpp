@@ -78,7 +78,7 @@ openGL_function_info(const string &line_from_gl_h_in,
 
   retEnd=line_from_gl_h.find(APIsuffix_type,retBegin);
 
-  if(retEnd==string::npos)
+  if(APIsuffix_type.length()==0 || retEnd==string::npos)
     {
       //unable to find GLAPIENTRY to mark
       //where the return type ends, so we
@@ -581,6 +581,10 @@ HeaderStart(ostream &headerFile, const list<string> &fileNames)
 
   for(list<string>::const_iterator i=fileNames.begin(); i!=fileNames.end(); ++i)
     {
+    #ifdef __APPLE__
+      if (*i == "OpenGL/gl3.h")
+		headerFile  << "#define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED\n";
+	#endif
       headerFile  << "#include <" << *i << ">\n";
     }
 

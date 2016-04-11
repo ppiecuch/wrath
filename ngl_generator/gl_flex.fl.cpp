@@ -75,6 +75,12 @@ extern{space}+{CGLGLTYPE}{space}*+GLAPIENTRY{space}+gl[^\n]*\n  {
   openGL_functionList.push_back(ptr); 
 }
 
+extern{space}+{CGLGLTYPE}{space}*+gl[^\n]*\n  { 
+  openGL_function_info *ptr;
+  ptr=new openGL_function_info(yytext,"extern", "");
+  openGL_functionList.push_back(ptr); 
+}
+
 GLAPI{space}+{CGLGLTYPE}{space}*+GLAPIENTRY{space}+gl[^\n]*\n  { 
   openGL_function_info *ptr;
   ptr=new openGL_function_info(yytext, "GLAPI", "GLAPIENTRY");

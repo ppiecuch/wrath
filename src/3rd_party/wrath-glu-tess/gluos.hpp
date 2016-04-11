@@ -1,7 +1,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <malloc.h>
-
+#ifndef __APPLE__
+# include <malloc.h>
+#endif
 
 #define REGALWRATH_GLU_CALL
