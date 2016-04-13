@@ -69,8 +69,6 @@
 
 
 
-
-
 class fragment_sources:boost::noncopyable
 {
 public:

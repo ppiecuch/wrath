@@ -1,4 +1,6 @@
 TEMPLATE = app
+CONFIG += console
+CONFIG -= app_bundle
 DESTDIR = ..
 
 #CONFIG+=HARMATTAN
@@ -31,7 +33,7 @@ DEFINES += NDEBUG
 }
 
 macx {
-INCLUDEPATH+=../deps/Darwin/include
+INCLUDEPATH+=../deps/Darwin/include ../deps/Darwin/include/freetype2
 LIBS+=-L../deps/Darwin/lib
 DEFINES+=sincosf=__sincosf
 

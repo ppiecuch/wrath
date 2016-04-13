@@ -90,6 +90,10 @@ namespace
           }
       }
 
+    if(p->m_gl_core_profile.m_value)
+	    fmt.setProfile( QGLFormat::CoreProfile );
+    fmt.setVersion( p->m_gl_major.m_value, p->m_gl_minor.m_value );
+
     return fmt;
 
   }

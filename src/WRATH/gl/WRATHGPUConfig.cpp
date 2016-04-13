@@ -81,7 +81,11 @@ default_shader_version(void)
   }
   #elif defined(WRATH_GL_VERSION) && WRATH_GL_VERSION>=3
   {
+  #ifdef __APPLE__
+    return "330";
+  #else
     return "130";
+  #endif
   }
   #endif
 

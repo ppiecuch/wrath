@@ -29,15 +29,15 @@ namespace
   public:
 
     explicit
-    GLBitsMaker(const QImage &img)
+    GLBitsMaker(const QImage &img, bool flip_y = false)
     {
       set(img);
     }
 
     void
-    set(const QImage &img)
+    set(const QImage &img, bool flip_y = false)
     {
-      const QImage rgba_image(QGLWidget::convertToGLFormat(img));
+      const QImage rgba_image(QGLWidget::convertToGLFormat(img).mirrored(false, true));
       int scan_line_length(4*img.width());
       const uchar *bits(rgba_image.bits());
       
@@ -55,7 +55,8 @@ WRATHQT::
 create_image(const QImage &img, 
              const WRATHImage::ImageFormat &fmt,
              const WRATHImage::WRATHImageID &ID,
-             bool use_unique_pixel_store)
+             bool use_unique_pixel_store,
+             enum y_flip_t flip)
 {
   vecN<uint32_t, 2> R(WRATHImage::texture_atlas_dimension());
   if(img.isNull()
@@ -82,7 +83,7 @@ create_image(const QImage &img,
                               fmt);
     }
 
-  respecify_sub_image(ptr, img, ivec2(0,0));
+  respecify_sub_image(ptr, img, ivec2(0,0), flip);
   return ptr;
 }
 
@@ -91,17 +92,18 @@ void
 WRATHQT::
 respecify_sub_image(int layer, WRATHImage *kan_img,
                     const QImage &img,
-                    const ivec2 &min_corner)
+                    const ivec2 &min_corner,
+                    enum y_flip_t flip)
 {
   if(img.isNull() or img.width()<=0 or img.height()<=0)
     {
       return;
     }
 
-  GLBitsMaker bits(img);
-
+  GLBitsMaker bits(img, flip==flip_y);
 
   WRATHassert(kan_img!=NULL);
+
   kan_img->respecify_sub_image(layer, 0,
                                WRATHImage::PixelImageFormat()
                                .pixel_data_format(GL_RGBA)
@@ -144,12 +146,13 @@ WRATHQT::
 load_image(const std::string &filename,
            const WRATHImage::ImageFormat &fmt,
            const WRATHImage::WRATHImageID &ID,
-           bool use_unique_pixel_store)
+           bool use_unique_pixel_store,
+           enum y_flip_t flip)
 {
   QImage qim(filename.c_str());
   if(!qim.isNull())
     {
-      return create_image(qim, fmt, ID, use_unique_pixel_store);
+      return create_image(qim, fmt, ID, use_unique_pixel_store, flip);
     }
   return NULL;
 }
@@ -158,14 +161,15 @@ WRATHImage*
 WRATHQT::
 fetch_image(const WRATHImage::WRATHImageID &ID,
             const WRATHImage::ImageFormat &fmt,
-            bool use_unique_pixel_store)
+            bool use_unique_pixel_store,
+            enum y_flip_t flip)
 {
   WRATHImage *return_value;
 
   return_value=WRATHImage::retrieve_resource(ID);
   if(return_value==NULL)
     {
-      return_value=load_image(ID, fmt, ID, use_unique_pixel_store);
+      return_value=load_image(ID, fmt, ID, use_unique_pixel_store, flip);
     }
   return return_value;
 }

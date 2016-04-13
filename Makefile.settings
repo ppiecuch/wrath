@@ -87,9 +87,21 @@ endif
 
 # flags
 WARN_FLAGS = -Wall -Wextra -Wcast-qual -Wwrite-strings
+ifeq ($(shell uname -s),Darwin)
+FREETYPE_CXXFLAGS = 
+FREETYPE_LDFLAGS = 
+WRATHLIB_LDFLAGS = -lpthread -ldl \
+	../deps/Darwin/lib/libfreetype.a \
+	../deps/Darwin/lib/libfontconfig.a \
+	../deps/Darwin/lib/libexpat.a \
+	../deps/Darwin/lib/libz.a \
+	../deps/Darwin/lib/libbz2.a \
+	../deps/Darwin/lib/libpng.a
+else
 FREETYPE_CXXFLAGS = `freetype-config --cflags`
 FREETYPE_LDFLAGS = `freetype-config --libs`
-WRATHLIB_LDFLAGS = $(FREETYPE_LDFLAGS) -lpthread -lfontconfig -ldl
+WRATHLIB_LDFLAGS = $(FREETYPE_LDFLAGS) -lpthread -lfontconfig -lpng -ldl
+endif
 
 # Flags for libraries, common to everything
 LIBRARY_CXXFLAGS =  $(FREETYPE_CXXFLAGS)

@@ -205,7 +205,7 @@ public:
     m_log_gl_commands("", "log_gl", "if non-empty, GL commands are logged to the named file. "
                       "If value is stderr then logged to stderr, if value is stdout logged to stdout", *this),
     m_log_alloc_commands("", "log_alloc", "If non empty, logs allocs and deallocs to the named file", *this),
-    m_print_gl_info(false, "print_gl_info", "If true print to stdout GL information", *this),
+    m_print_gl_info(true, "print_gl_info", "If true print to stdout GL information", *this),
 
     m_w(NULL)
   {}

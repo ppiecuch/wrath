@@ -26,3 +26,8 @@ DEFINES +=
 release {
 DEFINES += NDEBUG
 }
+
+macx {
+	INCLUDEPATH+=deps/Darwin/include
+	LIBS+=-Ldeps/Darwin/lib
+}

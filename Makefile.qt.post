@@ -57,6 +57,7 @@ release/qt-$(1).pro: QtDemo.pro.in $(MAKEFILE_LIST) | $$(THISDEMO_$(1)_RELEASE_S
 	@printf "QMAKE_CXXFLAGS_RELEASE += %s\n" $$(CXXFLAGS_RELEASE) $$($(1)_CXXFLAGS_RELEASE) >> $$@
 	@printf "LIBS += %s\n" $$(LDFLAGS) >> $$@
 	@printf "LIBS += libWRATH_Qt_Release.a\n" >> $$@
+	@printf "LIBS += -force_load unityshaders.o\n" >> $$@
 	@printf "MAKEFILE = qt-$(1).Makefile\n" >> $$@
 	@printf "QMAKE_CXX = %s\n" "$(CXX)" >> $$@
 	@printf "QMAKE_CC = %s\n" "$(CC)" >> $$@
@@ -78,6 +79,7 @@ debug/qt-$(1)-debug.pro: QtDemo.pro.in $(MAKEFILE_LIST) | $$(THISDEMO_$(1)_DEBUG
 	@printf "QMAKE_CXXFLAGS_DEBUG += %s\n" $$(CXXFLAGS_DEBUG) $$($(1)_CXXFLAGS_DEBUG) >> $$@
 	@printf "LIBS += %s\n" $$(LDFLAGS) >> $$@
 	@printf "LIBS += libWRATH_Qt_Debug.a\n" >> $$@
+	@printf "LIBS += -force_load unityshaders.o\n" >> $$@
 	@printf "MAKEFILE = qt-$(1)-debug.Makefile\n" >> $$@
 	@printf "QMAKE_CXX = %s\n" "$(CXX)" >> $$@
 	@printf "QMAKE_CC = %s\n" "$(CC)" >> $$@
@@ -98,12 +100,11 @@ release/QtLib.Makefile: release/QtLib.pro
 debug/QtLib.Makefile: debug/QtLib.pro
 	cd debug && $(QMAKE_CMD) QtLib.pro
 
-release/QtLib.pro: QtLib.pro.in $(MAKEFILE_LIST) | $(RELEASE_SHADERS) ngl/$(NGL).cpp
+release/QtLib.pro: QtLib.pro.in $(MAKEFILE_LIST) | $(RELEASE_SHADERS) ngl/$(NGL).cpp release/unitybuild.cxx release/unityshaders.cxx
 	@echo Generating $@
 	@printf "CONFIG += release\nCONFIG -= debug\n" > $@
 	@printf "TARGET = WRATH_Qt_Release\n" >> $@
 	@printf "SOURCES += %s\n" $(addprefix ../, $(QT_LIB_SOURCES)) >> $@
-	@printf "SOURCES += %s\n" $(addprefix ../, $(RELEASE_SHADERS)) >> $@
 	@printf "INCLUDEPATH += %s\n" $(addprefix ../, $(subst -I,,$(INCLUDES))) >> $@
 	@printf "DEPENDPATH += %s\n" $(addprefix ../, $(subst -I,,$(INCLUDES))) >> $@
 	@printf "QMAKE_CXXFLAGS = \n" >> $@
@@ -112,14 +113,26 @@ release/QtLib.pro: QtLib.pro.in $(MAKEFILE_LIST) | $(RELEASE_SHADERS) ngl/$(NGL)
 	@printf "LIBS += %s\n" $(LDFLAGS) >> $@
 	@printf "QMAKE_CXX = %s\n" "$(CXX)" >> $@
 	@printf "QMAKE_CC = %s\n" "$(CC)" >> $@
+	@printf 'shaderslib.commands = $$(CXX) -c $$(CXXFLAGS) $$(INCPATH) unityshaders.cxx\n' >> $@
+	@printf "shaderslib.target = unityshaders.o\n" >> $@
+	@printf "shaderslib.depends = unityshaders.cxx\n" >> $@
+	@printf "QMAKE_EXTRA_TARGETS += shaderslib\n" >> $@
+	@printf 'PRE_TARGETDEPS += unityshaders.o\n' >> $@
 	@cat $< >> $@
 
-debug/QtLib.pro: QtLib.pro.in $(MAKEFILE_LIST) | $(DEBUG_SHADERS) ngl/$(NGL).cpp
+release/unitybuild.cxx: $(QT_LIB_SOURCES)
+	@echo Generating $@
+	@printf "#include \"%s\"\n" $(addprefix ../, $(QT_LIB_SOURCES)) >> "$@"
+
+release/unityshaders.cxx: $(RELEASE_SHADERS)
+	@echo Generating $@
+	@printf "#include \"%s\"\n" $(addprefix ../, $(RELEASE_SHADERS)) >> "$@"
+
+debug/QtLib.pro: QtLib.pro.in $(MAKEFILE_LIST) | $(DEBUG_SHADERS) ngl/$(NGL).cpp debug/unitybuild.cxx debug/unityshaders.cxx
 	@echo Generating $@
 	@printf "CONFIG -= release\nCONFIG += debug\n" > $@
 	@printf "TARGET = WRATH_Qt_Debug\n" >> $@
 	@printf "SOURCES += %s\n" $(addprefix ../, $(QT_LIB_SOURCES)) >> $@
-	@printf "SOURCES += %s\n" $(addprefix ../, $(DEBUG_SHADERS)) >> $@
 	@printf "INCLUDEPATH += %s\n" $(addprefix ../, $(subst -I,,$(INCLUDES))) >> $@
 	@printf "DEPENDPATH += %s\n" $(addprefix ../, $(subst -I,,$(INCLUDES))) >> $@
 	@printf "QMAKE_CXXFLAGS = \n" >> $@
@@ -128,7 +141,20 @@ debug/QtLib.pro: QtLib.pro.in $(MAKEFILE_LIST) | $(DEBUG_SHADERS) ngl/$(NGL).cpp
 	@printf "LIBS += %s\n" $(LDFLAGS) >> $@
 	@printf "QMAKE_CXX = %s\n" "$(CXX)" >> $@
 	@printf "QMAKE_CC = %s\n" "$(CC)" >> $@
+	@printf 'shaderslib.commands = $$(CXX) -c $$(CXXFLAGS) $$(INCPATH) unityshaders.cxx\n' >> $@
+	@printf "shaderslib.target = unityshaders.o\n" >> $@
+	@printf "shaderslib.depends = unityshaders.cxx\n" >> $@
+	@printf "QMAKE_EXTRA_TARGETS += shaderslib\n" >> $@
+	@printf 'PRE_TARGETDEPS += unityshaders.o\n' >> $@
 	@cat $< >> $@
+
+debug/unitybuild.cxx: $(QT_LIB_SOURCES)
+	@echo Generating $@
+	@printf "#include \"%s\"\n" $(addprefix ../, $(QT_LIB_SOURCES)) >> "$@"
+
+debug/unityshaders.cxx: $(DEBUG_SHADERS)
+	@echo Generating $@
+	@printf "#include \"%s\"\n" $(addprefix ../, $(DEBUG_SHADERS)) >> "$@"
 
 release/QtLibConf.pri: QtLibConf.pri.in $(MAKEFILE_LIST)
 	@echo Generating $@
